@@ -149,47 +149,22 @@ example: now, 2 days ago, 4 weeks from now, etc. For tesability, use Clock
 rather than other ways of accessing time, like `new DateTime()`, so that you
 can use a fake time function in your tests to control time.
 
-## strings.dart
+`Now` is a typedef for functions that return the current time in microseconds,
+since Clock deals in DateTime which only have millisecond accuracy.
 
-`isBlank` checks if a string is `null`, empty or made of whitespace characters.
-
-`flip` flips the order of characters in a string.
-
-<<<<<<< HEAD
-`nullToEmpty` turns `null` to empty string, and returns non-empty strings
-unchanged.
-
-`emptyToNull` turns empty string to `null`, and returns non-empty strings
-unchanged.
-
-`repeat` concatenates a string to itself a given number of times, for example:
-
-`repeat('la ', 3) => 'la la la '`
-
-It can also repeat in reverse, for example:
-=======
 [quiver.time]: http://google.github.io/quiver-dart/docs/quiver.time.html
 
 # Testing Libraries
 
 ## [quiver.async.testing][]
 
-`repeat(' og', -3) => 'go go go '`
+`FakeTimer` is a Timer that captures its duration and callback for use in tests.
 
-`loop` allows you to loop through characters in a string starting and ending at
-arbitrary indices. Out of bounds indices allow you to wrap around the string,
-supporting a number of use-cases, including:
+[quiver.async.testing]: http://google.github.io/quiver-dart/docs/quiver.async.testing.html
 
-### Rotating
-`loop('lohel', -3, 2) => 'hello'`
+## [quiver.time.testing][]
 
-### Repeating
-Like `repeat`, but with better character-level control, e.g.:
-`loop('la ', 0, 8) => 'la la la'  // no tailing space`
+`FakeStopwatch` is a Stopwatch that uses a provided `now()` function to get the
+current time.
 
-### Tailing
-`loop('/path/to/some/file.txt', -3) => 'txt'`
-
-### Reversing
-`loop('top', 3, 0) => 'pot'`
-
+[quiver.time.testing]: http://google.github.io/quiver-dart/docs/quiver.time.testing.html
