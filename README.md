@@ -1,12 +1,16 @@
-quiver-dart
-===========
+Quiver
+======
 
 Quiver is a set of utility libraries for Dart that makes using many Dart
 libraries easier and more convenient, or adds additional functionality.
 
+## Documentation
+
+API Docs can be found here: http://google.github.io/quiver-dart/docs/
+
 # Main Libraries
 
-## async.dart
+## [quiver.async][]
 
 Utilities for working with Futures, Streams and async computations.
 
@@ -29,7 +33,9 @@ next element.
 passing Timer factories to classes and functions, increasing the testability of
 code that depends on Timer.
 
-## cache.dart
+[quiver.async]: http://google.github.io/quiver-dart/docs/quiver.async.html
+
+## [quiver.cache][]
 
 `Cache` is a semi-persistent, asynchronously accessed, mapping of keys to
 values. Caches are similar to Maps, except that the cache implementation might
@@ -38,18 +44,24 @@ might have eviction policies.
 
 `MapCache` is a Cache implementation backed by a Map.
 
-## collection.dart
+[quiver.cache]: http://google.github.io/quiver-dart/docs/quiver.cache.html
+
+## [quiver.collection][]
 
 `Multimap` is an associative collection that maps keys to collections of
 values. `BiMap` is a bi-directional map and provides an inverse view, allowing
 lookup of key by value.
 
-## io.dart
+[quiver.collection]: http://google.github.io/quiver-dart/docs/quiver.collection.html
+
+## [quiver.io][]
 
 `visitDirectory` is a recursive directory lister that conditionally recurses
 into sub-directories based on the result of a handler function.
 
-## iterables.dart
+[quiver.io]: http://google.github.io/quiver-dart/docs/quiver.io.html
+
+## [quiver.iterables][]
 
 `count`, `cycle`, `enumerate`, `merge`, `range`, and  `zip` create, transform,
 or combine Iterables in different ways, similar to Python's itertools.
@@ -57,7 +69,9 @@ or combine Iterables in different ways, similar to Python's itertools.
 `min`, `max`, and `extent` retreive the minimum and maximum elements from an
 iterable.
 
-## mirrors.dart
+[quiver.iterables]: http://google.github.io/quiver-dart/docs/quiver.iterables.html
+
+## [quiver.mirrors][]
 
 `getTypeName` returns the name of a Type instance.
 
@@ -72,7 +86,9 @@ contain members from interfaces or superclasses.
 `Method` wraps an InstanceMirror and Symbol to create a callable that invokes
 a method on the instance. It in effect closurizes a method reflectively.
 
-## pattern.dart
+[quiver.mirrors]: http://google.github.io/quiver-dart/docs/quiver.mirrors.html
+
+## [quiver.pattern][]
 
 pattern.dart container utilities for work with `Pattern`s and `RegExp`s.
 
@@ -85,7 +101,9 @@ pattern.dart container utilities for work with `Pattern`s and `RegExp`s.
 `escapeRegex` escapes special regex characters in a String so that it can be
 used as a literal match inside of a RegExp.
 
-## strings.dart
+[quiver.pattern]: http://google.github.io/quiver-dart/docs/quiver.pattern.html
+
+## [quiver.strings][]
 
 `isBlank` checks if a string is `null`, empty or made of whitespace characters.
 
@@ -122,7 +140,9 @@ Like `repeat`, but with better character-level control, e.g.:
 ###### Reversing
 `loop('top', 3, 0) => 'pot'`
 
-## time.dart
+[quiver.strings]: http://google.github.io/quiver-dart/docs/quiver.strings.html
+
+## [quiver.time][]
 
 `Clock` provides points in time relative to the current point in time, for
 example: now, 2 days ago, 4 weeks from now, etc. For tesability, use Clock
@@ -135,6 +155,7 @@ can use a fake time function in your tests to control time.
 
 `flip` flips the order of characters in a string.
 
+<<<<<<< HEAD
 `nullToEmpty` turns `null` to empty string, and returns non-empty strings
 unchanged.
 
@@ -146,6 +167,12 @@ unchanged.
 `repeat('la ', 3) => 'la la la '`
 
 It can also repeat in reverse, for example:
+=======
+[quiver.time]: http://google.github.io/quiver-dart/docs/quiver.time.html
+
+# Testing Libraries
+
+## [quiver.async.testing][]
 
 `repeat(' og', -3) => 'go go go '`
 
@@ -165,5 +192,4 @@ Like `repeat`, but with better character-level control, e.g.:
 
 ### Reversing
 `loop('top', 3, 0) => 'pot'`
-
 
