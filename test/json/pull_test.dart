@@ -64,6 +64,26 @@ main() {
         objectEnd,
       ]);
     });
+
+    var nums = <String, num>{
+      '1' : 1,
+      '-12.3456' : -12.3456,
+      '0.123' : 0.123,
+      '1.42e+5' : 1.42e+5,
+      '1.42E+5' : 1.42E+5,
+      '1.42E-5' : 1.42E-5,
+      '-1234567890e+1' : -12345678900.toDouble(),
+    };
+    nums.forEach((String n, num v) {
+      test('should parse number ${n}', () {
+        expectJson('''{"number": ${n}}''', [
+          objectStart,
+          propertyName("number"),
+          new ParseEvent(ParseEventType.NUMBER_VALUE, v),
+          objectEnd,
+        ]);
+      });
+    });
   });
 }
 
@@ -73,6 +93,9 @@ void expectJson(String jsonStr, List<ParseEvent> expected) {
   var actual = new PullParser(jsonStr.runes.iterator);
   for (int i = 0; i < expected.length; i++) {
     expect(actual.moveNext(), isTrue);
+    if (actual.current.value != null && expected[i].value != null) {
+      expect(actual.current.value.runtimeType, expected[i].value.runtimeType);
+    }
     expect(actual.current, equals(expected[i]));
   }
 }

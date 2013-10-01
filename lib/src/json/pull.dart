@@ -13,6 +13,13 @@ class PullParser implements Iterator<ParseEvent> {
   static final _T = _codeUnitOf('t');
   static final _F = _codeUnitOf('f');
   static final _N = _codeUnitOf('n');
+  static final _E = _codeUnitOf('e');
+  static final _E_CAP = _codeUnitOf('E');
+  static final _MINUS = _codeUnitOf('-');
+  static final _PLUS = _codeUnitOf('+');
+  static final _DOT = _codeUnitOf('.');
+  static final _ZERO = _codeUnitOf('0');
+  static final _NINE = _codeUnitOf('9');
   static final _TRUE = 'true'.codeUnits;
   static final _FALSE = 'false'.codeUnits;
   static final _NULL = 'null'.codeUnits;
@@ -58,7 +65,14 @@ class PullParser implements Iterator<ParseEvent> {
   }
 
   bool _isValidStartOfValue(int ch) =>
-      ch == _T || ch == _F || ch == _DBL_QUOTE || ch == _N;
+      ch == _T || ch == _F ||  // bool
+      ch == _DBL_QUOTE ||  // string
+      ch == _N ||  // null
+      _isNumeric(ch);  // number
+
+  bool _isNumeric(int ch) =>
+      ch == _MINUS || ch == _PLUS || ch == _DOT || ch == _E || ch == _E_CAP ||
+      (_ZERO <= ch && ch <= _NINE);
 
   void _popContext() {
     _contextStack.removeLast();
@@ -157,6 +171,8 @@ class PullParser implements Iterator<ParseEvent> {
     } else if (ch == _N) {
       _consume(_NULL);
       return ParseEvent.NULL;
+    } else if (_isNumeric(ch)) {
+      return _consumeNumber();
     } else {
       throw _unexpectedCodePoint();
     }
@@ -176,6 +192,15 @@ class PullParser implements Iterator<ParseEvent> {
     return new ParseEvent(type, parse(sb.toString()));
   }
 
+  ParseEvent _consumeNumber() {
+    var sb = new StringBuffer();
+    sb.writeCharCode(_src.current);
+    while(_srcMoveNext() && _isNumeric(_src.current)) {
+      sb.writeCharCode(_src.current);
+    }
+    return new ParseEvent(ParseEventType.NUMBER_VALUE, parse(sb.toString()));
+  }
+
   void _consume(List<int> codePoints) {
     for (int i = 0; i < codePoints.length; i++) {
       if (_src.current != codePoints[i]) {
@@ -187,7 +212,6 @@ class PullParser implements Iterator<ParseEvent> {
     }
   }
 
-  // TODO: can haz no parameter?
   StateError _unexpectedCodePoint() {
     var char = new String.fromCharCode(_src.current);
     return new StateError('Unexpected code point at ${_position} [${char}]');
