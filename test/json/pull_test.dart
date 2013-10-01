@@ -84,6 +84,76 @@ main() {
         ]);
       });
     });
+
+    test('should parse empty list', () {
+      expectJson('[]', [
+        listStart,
+        listEnd,
+      ]);
+    });
+
+    test('should parse nested lists', () {
+      expectJson('''[[],[]]''', [
+        listStart,
+          listStart,
+          listEnd,
+          listStart,
+          listEnd,
+        listEnd,
+      ]);
+    });
+
+    test('should parse objects nested in list', () {
+      expectJson('''[{},{}]''', [
+        listStart,
+          objectStart,
+          objectEnd,
+          objectStart,
+          objectEnd,
+        listEnd,
+      ]);
+    });
+
+    test('should parse objects nested in object', () {
+      expectJson('''{"a" : {}, "b" : {}}''', [
+        objectStart,
+        propertyName("a"),
+          objectStart,
+          objectEnd,
+        propertyName("b"),
+          objectStart,
+          objectEnd,
+        objectEnd,
+      ]);
+    });
+
+    test('should parse mixed list', () {
+      expectJson('''
+[
+  "hello",
+  3.1415,
+  null,
+  true,
+  [ 1, 2, 3 ],
+  { "a": "b" }
+]''', [
+        listStart,
+        stringValue("hello"),
+        numberValue(3.1415),
+        ParseEvent.NULL,
+        ParseEvent.TRUE,
+        listStart,
+          numberValue(1),
+          numberValue(2),
+          numberValue(3),
+        listEnd,
+        objectStart,
+          propertyName("a"),
+          stringValue("b"),
+        objectEnd,
+        listEnd,
+      ]);
+    });
   });
 }
 
@@ -104,6 +174,8 @@ ParseEvent propertyName(String name) =>
     new ParseEvent(ParseEventType.PROPERTY_NAME, name);
 ParseEvent stringValue(String value) =>
     new ParseEvent(ParseEventType.STRING_VALUE, value);
+ParseEvent numberValue(num value) =>
+    new ParseEvent(ParseEventType.NUMBER_VALUE, value);
 
 const objectStart = ParseEvent.OBJECT_START;
 const objectEnd = ParseEvent.OBJECT_END;

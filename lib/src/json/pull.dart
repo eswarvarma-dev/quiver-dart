@@ -41,6 +41,13 @@ class PullParser implements Iterator<ParseEvent> {
   }
 
   _NodeType get _context => _contextStack.last;
+  _NodeType get _parentContext {
+    int len = _contextStack.length;
+    if (len < 2) {
+      return null;
+    }
+    return _contextStack[len - 2];
+  }
 
   void _pushContext() {
     // Detect what context are we entering
@@ -93,23 +100,21 @@ class PullParser implements Iterator<ParseEvent> {
       _popContext();
       result = ParseEvent.OBJECT_END;
       _srcMoveNext();
+      _skipCommaIfAny();
     } else if (ch == _OPEN_SQUARE) {
       result = ParseEvent.LIST_START;
       _srcMoveNext();
     } else if (ch == _CLOSE_SQUARE) {
       _popContext();
-      result = ParseEvent.LIST_START;
+      result = ParseEvent.LIST_END;
       _srcMoveNext();
+      _skipCommaIfAny();
     } else if (_context == _NodeType.VALUE) {
-      if (_previousParseEventType == ParseEventType.PROPERTY_NAME) {
+      if (_previousParseEventType == ParseEventType.PROPERTY_NAME ||
+          _parentContext == _NodeType.LIST) {
         // Property value
         result = _consumeValue();
-        _skipWhiteSpace(() {
-          // Comma before next property. Skip it.
-          if (_src.current == _COMMA) {
-            _srcMoveNext();
-          }
-        });
+        _skipCommaIfAny();
       } else if (ch == _DBL_QUOTE) {
         // Property name
         result = _consumeString(ParseEventType.PROPERTY_NAME);
@@ -144,6 +149,17 @@ class PullParser implements Iterator<ParseEvent> {
       }
     } while(_srcMoveNext());
     return false;
+  }
+
+  _skipCommaIfAny() {
+    if (!_eof) {
+      _skipWhiteSpace(() {
+        // Comma before next property. Skip it.
+        if (_src.current == _COMMA) {
+          _srcMoveNext();
+        }
+      });
+    }
   }
 
   bool _srcMoveNext() {
